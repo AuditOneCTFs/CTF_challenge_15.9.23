@@ -7,7 +7,7 @@ In a world of NFTs, the "Democracy NFT" project aimes to bring fairness to on-ch
 Instructions
 
 - Fork the repo with the code base and issues template file.
-- Create a new file with your name ( as in auditone app) in the forked repo and copy the contents of issues template.
-- Audit the codebase and fill the issues in issues template with your name.
-- Make a pull request during the submission time and you are done with the submission.
+- Create a new file with your name ( as in auditone app) in the forked repo
+- Solve the challenge and write your attack code in the new file
+- Make a pull request to submit your file
 - Only the first and one pull request is considered as a submission
